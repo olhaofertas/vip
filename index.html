@@ -22,6 +22,97 @@
       padding: 20px;
     }
 
+    /* Aviso no topo caso esteja no navegador do TikTok */
+    .tiktok-banner {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      background: #ef4444;
+      color: #fff;
+      padding: 10px 16px;
+      font-size: 13px;
+      font-weight: 600;
+      text-align: center;
+      z-index: 100;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    }
+
+    /* Tela cheia explicativa caso o WhatsApp seja bloqueado pelo TikTok */
+    .modal-tiktok {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(15, 23, 42, 0.96);
+      z-index: 999;
+      padding: 24px;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+    }
+
+    .seta-topo {
+      position: absolute;
+      top: 15px;
+      right: 20px;
+      font-size: 42px;
+      animation: pular 1s infinite alternate;
+    }
+
+    @keyframes pular {
+      from { transform: translateY(0); }
+      to { transform: translateY(12px); }
+    }
+
+    .modal-box {
+      background: #1e293b;
+      border: 2px solid #22c55e;
+      border-radius: 20px;
+      padding: 28px 20px;
+      max-width: 360px;
+      width: 100%;
+    }
+
+    .modal-box h2 {
+      font-size: 20px;
+      margin-bottom: 12px;
+      color: #fbbf24;
+    }
+
+    .modal-box p {
+      font-size: 15px;
+      line-height: 1.5;
+      color: #e2e8f0;
+      margin-bottom: 16px;
+    }
+
+    .passo-destaque {
+      background: rgba(255,255,255,0.08);
+      padding: 12px;
+      border-radius: 12px;
+      font-weight: 700;
+      color: #4ade80;
+      margin-bottom: 16px;
+      font-size: 14px;
+    }
+
+    .btn-copiar {
+      background: #3b82f6;
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      padding: 12px 16px;
+      width: 100%;
+      font-weight: 700;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
     .card {
       background: rgba(255, 255, 255, 0.05);
       backdrop-filter: blur(12px);
@@ -33,6 +124,7 @@
       max-width: 400px;
       text-align: center;
       box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+      margin-top: 20px;
     }
 
     .badge {
@@ -93,25 +185,14 @@
       -webkit-tap-highlight-color: transparent;
     }
 
-    .option-card:hover {
-      background: rgba(255, 255, 255, 0.1);
-    }
-
     .option-card.selected {
       background: rgba(34, 197, 94, 0.15);
       border-color: #22c55e;
       transform: translateY(-2px);
     }
 
-    .option-icon {
-      font-size: 24px;
-    }
-
-    .option-title {
-      font-size: 13px;
-      font-weight: 600;
-      color: #f8fafc;
-    }
+    .option-icon { font-size: 24px; }
+    .option-title { font-size: 13px; font-weight: 600; color: #f8fafc; }
 
     .btn-whatsapp {
       background: #22c55e;
@@ -138,11 +219,6 @@
       pointer-events: auto;
     }
 
-    .btn-whatsapp.active:hover {
-      background: #16a34a;
-      transform: scale(1.02);
-    }
-
     .footer-note {
       margin-top: 16px;
       font-size: 12px;
@@ -151,6 +227,26 @@
   </style>
 </head>
 <body>
+
+  <!-- Barra de aviso preventiva se abrir pelo TikTok -->
+  <div id="tiktokBanner" class="tiktok-banner">
+    ⚠️ Se o botão não abrir, toque nos <b>3 pontinhos (•••)</b> lá em cima e escolha <b>"Abrir no navegador"</b>.
+  </div>
+
+  <!-- Tela de instrução caso o TikTok trave o redirecionamento -->
+  <div id="modalTiktok" class="modal-tiktok">
+    <div class="seta-topo">↗️</div>
+    <div class="modal-box">
+      <h2>Quase lá! Falta 1 toque 👇</h2>
+      <p>O TikTok bloqueia a abertura direta do WhatsApp. Para entrar no grupo agora:</p>
+      <div class="passo-destaque">
+        1. Toque nos 3 pontinhos (•••) no canto superior direito.<br><br>
+        2. Toque em "Abrir no navegador".
+      </div>
+      <p style="font-size: 12px; color: #94a3b8;">Ou copie o link direto do grupo abaixo:</p>
+      <button class="btn-copiar" onclick="copiarLink(this)">📋 Copiar Link do Grupo</button>
+    </div>
+  </div>
 
   <div class="card">
     <div class="badge">🔥 Acesso Gratuito</div>
@@ -189,13 +285,29 @@
   </div>
 
   <script>
-    let categoriaEscolhida = '';
-    
     // ⚠️ 1. COLE AQUI A URL DO SEU GOOGLE APPS SCRIPT (terminada em /exec):
     const URL_DO_SCRIPT_GOOGLE = 'https://script.google.com/macros/s/AKfycbweMTaYyFZgOm9PeTNhf25JY6UBHde2mnNB512HOQOTDGHHRYmx86S1MEIFkOAEGa0K/exec';
 
     // ⚠️ 2. COLE AQUI O LINK DO SEU GRUPO DO WHATSAPP:
     const LINK_DO_GRUPO = 'https://bit.ly/olhaofertas';
+
+    let categoriaEscolhida = '';
+
+    // Detecta se a pessoa abriu pelo navegador interno do TikTok ou Instagram
+    const ua = navigator.userAgent || navigator.vendor || window.opera;
+    const isTikTok = /BytedanceWebview|musical_ly|TikTok|Instagram/i.test(ua);
+    const isAndroid = /Android/i.test(ua);
+
+    if (isTikTok) {
+      document.getElementById('tiktokBanner').style.display = 'block';
+
+      // Tenta forçar a abertura no Chrome automaticamente caso seja Android
+      if (isAndroid && !window.location.hash.includes('tentou')) {
+        window.location.hash = 'tentou';
+        const urlSemProtocolo = window.location.href.replace(/^https?:\/\//, '');
+        window.location.href = `intent://${urlSemProtocolo}#Intent;scheme=https;package=com.android.chrome;end`;
+      }
+    }
 
     function selecionarOpcao(elemento, categoria) {
       const cards = document.querySelectorAll('.option-card');
@@ -208,29 +320,54 @@
       btn.classList.add('active');
     }
 
+    function abrirWhatsAppForcado() {
+      // Extrai apenas o código final do link do grupo
+      const codigoGrupo = LINK_DO_GRUPO.split('chat.whatsapp.com/')[1]?.split('?')[0] || '';
+
+      if (codigoGrupo) {
+        // 1ª Tentativa: Chama direto o app nativo do WhatsApp (Fura o bloqueio na maioria dos celulares!)
+        window.location.href = `whatsapp://chat/?code=${codigoGrupo}`;
+      }
+
+      // 2ª Tentativa (Android): Tenta jogar o link pro Chrome/WhatsApp via Intent
+      if (isAndroid && codigoGrupo) {
+        setTimeout(() => {
+          window.location.href = `intent://chat.whatsapp.com/${codigoGrupo}#Intent;scheme=https;package=com.whatsapp;end`;
+        }, 600);
+      }
+
+      // 3ª Tentativa: Se após 1.5s a pessoa ainda estiver presa no TikTok, mostra a tela com a seta pros 3 pontinhos
+      setTimeout(() => {
+        if (isTikTok) {
+          document.getElementById('modalTiktok').style.display = 'flex';
+        } else {
+          window.location.href = LINK_DO_GRUPO;
+        }
+      }, 1500);
+    }
+
     function irParaGrupo() {
       if (!categoriaEscolhida) return;
 
       const btn = document.getElementById('btnEntrar');
-      btn.innerHTML = '<span>Entrando no grupo... ⏳</span>';
-      btn.style.pointerEvents = 'none';
+      btn.innerHTML = '<span>Abrindo WhatsApp... ⏳</span>';
 
-      // Envia para a planilha e e-mail em segundo plano sem travar o usuário
+      // Envia a resposta para a sua planilha e e-mail
       fetch(URL_DO_SCRIPT_GOOGLE, {
         method: 'POST',
         mode: 'no-cors',
         headers: { 'Content-Type': 'text/plain;charset=utf-8' },
         body: JSON.stringify({ categoria: categoriaEscolhida })
-      }).then(() => {
-        window.location.href = LINK_DO_GRUPO;
-      }).catch(() => {
-        window.location.href = LINK_DO_GRUPO;
-      });
+      }).catch(() => {});
 
-      // Garantia extra: se a internet da pessoa oscilar, redireciona em 1.2s de qualquer jeito
-      setTimeout(() => {
-        window.location.href = LINK_DO_GRUPO;
-      }, 1200);
+      // Aciona o pulo pro WhatsApp
+      abrirWhatsAppForcado();
+    }
+
+    function copiarLink(botao) {
+      navigator.clipboard.writeText(LINK_DO_GRUPO);
+      botao.innerText = '✅ Link Copiado! Cole no seu WhatsApp';
+      botao.style.background = '#22c55e';
     }
   </script>
 </body>
