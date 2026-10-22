@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Grupo VIP de Ofertas</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+      color: #ffffff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .card {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 24px;
+      padding: 32px 24px;
+      width: 100%;
+      max-width: 400px;
+      text-align: center;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+    }
+
+    .badge {
+      background: rgba(245, 158, 11, 0.2);
+      color: #fbbf24;
+      border: 1px solid rgba(245, 158, 11, 0.4);
+      padding: 6px 14px;
+      border-radius: 50px;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      display: inline-block;
+      margin-bottom: 16px;
+    }
+
+    h1 {
+      font-size: 24px;
+      font-weight: 800;
+      margin-bottom: 10px;
+      line-height: 1.25;
+    }
+
+    p.subtitle {
+      font-size: 14px;
+      color: #94a3b8;
+      margin-bottom: 24px;
+      line-height: 1.5;
+    }
+
+    .question {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 12px;
+      color: #e2e8f0;
+      text-align: left;
+    }
+
+    .options-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 24px;
+    }
+
+    .option-card {
+      background: rgba(255, 255, 255, 0.06);
+      border: 2px solid transparent;
+      border-radius: 14px;
+      padding: 14px 10px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .option-card:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .option-card.selected {
+      background: rgba(34, 197, 94, 0.15);
+      border-color: #22c55e;
+      transform: translateY(-2px);
+    }
+
+    .option-icon {
+      font-size: 24px;
+    }
+
+    .option-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: #f8fafc;
+    }
+
+    .btn-whatsapp {
+      background: #22c55e;
+      color: #ffffff;
+      border: none;
+      border-radius: 14px;
+      padding: 16px 20px;
+      width: 100%;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+      transition: all 0.3s ease;
+      box-shadow: 0 8px 20px rgba(34, 197, 94, 0.3);
+      opacity: 0.5;
+      pointer-events: none;
+    }
+
+    .btn-whatsapp.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .btn-whatsapp.active:hover {
+      background: #16a34a;
+      transform: scale(1.02);
+    }
+
+    .footer-note {
+      margin-top: 16px;
+      font-size: 12px;
+      color: #64748b;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="card">
+    <div class="badge">🔥 Acesso Gratuito</div>
+    <h1>Grupo VIP de Ofertas & Achadinhos</h1>
+    <p class="subtitle">Receba os melhores descontos, bugs e cupons diários direto no seu WhatsApp.</p>
+
+    <div class="question">Qual tipo de oferta você mais procura?</div>
+
+    <div class="options-grid">
+      <div class="option-card" onclick="selecionarOpcao(this, 'Eletrônicos & Tech')">
+        <span class="option-icon">📱</span>
+        <span class="option-title">Tech & Celulares</span>
+      </div>
+
+      <div class="option-card" onclick="selecionarOpcao(this, 'Casa & Cozinha')">
+        <span class="option-icon">🏠</span>
+        <span class="option-title">Casa & Cozinha</span>
+      </div>
+
+      <div class="option-card" onclick="selecionarOpcao(this, 'Moda & Beleza')">
+        <span class="option-icon">👟</span>
+        <span class="option-title">Moda & Beleza</span>
+      </div>
+
+      <div class="option-card" onclick="selecionarOpcao(this, 'Tudo / Promoções Gerais')">
+        <span class="option-icon">⚡</span>
+        <span class="option-title">Quero de Tudo!</span>
+      </div>
+    </div>
+
+    <button id="btnEntrar" class="btn-whatsapp" onclick="irParaGrupo()">
+      <span>Entrar no Grupo do WhatsApp</span>
+    </button>
+
+    <div class="footer-note">🔒 Grupo silencioso. Apenas administradores enviam ofertas.</div>
+  </div>
+
+  <script>
+    let categoriaEscolhida = '';
+    
+    // ⚠️ 1. COLE AQUI A URL DO SEU GOOGLE APPS SCRIPT (terminada em /exec):
+    const URL_DO_SCRIPT_GOOGLE = 'https://script.google.com/macros/s/AKfycbweMTaYyFZgOm9PeTNhf25JY6UBHde2mnNB512HOQOTDGHHRYmx86S1MEIFkOAEGa0K/exec';
+
+    // ⚠️ 2. COLE AQUI O LINK DO SEU GRUPO DO WHATSAPP:
+    const LINK_DO_GRUPO = 'https://bit.ly/olhaofertas';
+
+    function selecionarOpcao(elemento, categoria) {
+      const cards = document.querySelectorAll('.option-card');
+      cards.forEach(c => c.classList.remove('selected'));
+
+      elemento.classList.add('selected');
+      categoriaEscolhida = categoria;
+
+      const btn = document.getElementById('btnEntrar');
+      btn.classList.add('active');
+    }
+
+    function irParaGrupo() {
+      if (!categoriaEscolhida) return;
+
+      const btn = document.getElementById('btnEntrar');
+      btn.innerHTML = '<span>Entrando no grupo... ⏳</span>';
+      btn.style.pointerEvents = 'none';
+
+      // Envia para a planilha e e-mail em segundo plano sem travar o usuário
+      fetch(URL_DO_SCRIPT_GOOGLE, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify({ categoria: categoriaEscolhida })
+      }).then(() => {
+        window.location.href = LINK_DO_GRUPO;
+      }).catch(() => {
+        window.location.href = LINK_DO_GRUPO;
+      });
+
+      // Garantia extra: se a internet da pessoa oscilar, redireciona em 1.2s de qualquer jeito
+      setTimeout(() => {
+        window.location.href = LINK_DO_GRUPO;
+      }, 1200);
+    }
+  </script>
+</body>
+</html>
